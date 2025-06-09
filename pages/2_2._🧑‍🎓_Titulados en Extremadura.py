@@ -39,7 +39,7 @@ def prepareDataFrame(df):
 
 @st.cache_data
 def loadDataFrame(year):
-  file_dir = f".\\Data\\Extremadura\\IndicadoresDemandaUniversitaria{year}.csv"
+  file_dir = f"./Data/Extremadura/IndicadoresDemandaUniversitaria{year}.csv"
   df = pd.read_csv(file_dir, encoding='utf-8')
   return prepareDataFrame(df)
 

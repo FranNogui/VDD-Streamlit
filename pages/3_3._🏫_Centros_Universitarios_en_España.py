@@ -105,7 +105,7 @@ universidad_a_provincia = {
 
 @st.cache_data
 def loadData():
-  directory = '.\\Data\\Espanya\\Provincias\\recintos_provinciales_inspire_peninbal_etrs89.shp'
+  directory = './Data/Espanya/Provincias/recintos_provinciales_inspire_peninbal_etrs89.shp'
   provincias = gpd.read_file(directory)
   provincias = provincias.to_crs("EPSG:4326")
   provincias = provincias[['NAMEUNIT', 'geometry']]
