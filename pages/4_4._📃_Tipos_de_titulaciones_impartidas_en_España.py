@@ -199,7 +199,7 @@ def main():
     geojson.add_to(m)
 
     st.title("Másteres por provincia en Espanya")
-    st.write("Aquí se muestran la cantidad de programas de master ofertados por provincia. Se da la opciónn de " \
+    st.write("Aquí se muestran la cantidad de programas de master ofertados por provincia. Se da la opción de " \
     "elegir tres posibles años a visualizar, pero nuevamente no existe gran diferencia entre ellos, cumpliendo que la mayoría se "
     "encuentran en Madrid y Barcelona.")
     st_folium(m, use_container_width=True, height=600, returned_objects=[])
