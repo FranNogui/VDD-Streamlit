@@ -81,20 +81,45 @@ def main():
     page_icon="🧑‍🎓",
     layout='wide'
   )
-  st.header("Titulaciones con más alumnos titulados en Extremadura")
 
-  gender = st.sidebar.radio("Género:", ["Hombre", "Mujer", "Ambos"])
-  start_year = st.sidebar.slider("Año inicio:", 2008, 2025, 2008, 1)
-  if start_year < 2025:
-    end_year = st.sidebar.slider("Año final:", start_year, 2025, step=1) 
+  type = st.sidebar.radio("Tipo de visualización:", ["Titulados por titulaciones", 
+                                                     "Comparación de matriculados por género"])
+
+  if type == "Titulados por titulaciones":
+    st.header("Titulaciones con más alumnos titulados en Extremadura")
+    st.write("En esta página se muestra en una gráfica de barras el subconjunto de las titulaciones impartidas en Extremadura " \
+    "con el mayor número de alumnos titulados. El usuario puede decidir sobre que años, para que géneros y cuantas titulaciones mostrar " \
+    "mediante los widgets proporcionados.")
+
+
+    gender = st.sidebar.radio("Género:", ["Hombre", "Mujer", "Ambos"])
+    start_year = st.sidebar.slider("Año inicio:", 2008, 2025, 2008, 1)
+    if start_year < 2025:
+      end_year = st.sidebar.slider("Año final:", start_year, 2025, step=1) 
+    else:
+      end_year = 2025
+
+    num_tit = st.sidebar.slider("Número de titulaciones:", 1, 50, step=1)
+
+    df = createDataFrame(gender, start_year, end_year, num_tit)
+    fig = px.bar(df, x='Num. Titulados', y='Titulacion', labels={'Titulacion': 'Titulación', 'Num. Titulados': 'Número de Titulados'})
+    fig.update_layout(title_text="Número de alumnos titulados por titulación", title_x=0.5, height= 80 + 920 * (num_tit / 50) ,margin=dict(l=20, r=20, t=40, b=30))
+    st.plotly_chart(fig, use_container_width=True)
   else:
-    end_year = 2025
+    st.header("Comparación entre matriculados por género")
+    st.write("En esta página se muestra mediante gráficos de violín una comparación entre matriculados de cada año por género.")
 
-  num_tit = st.sidebar.slider("Número de titulaciones:", 1, 50, step=1)
+    year =  st.sidebar.slider("Año: ", 2008, 2025, 2008, 1)
+    df1 = loadDataFrame(year)[['Anyo', 'HPrMat']].fillna(0)
+    df1['Sexo'] = 'Hombre'
+    df1 = df1.rename(columns={'HPrMat': 'Matriculados'})
 
-  df = createDataFrame(gender, start_year, end_year, num_tit)
-  fig = px.bar(df, x='Num. Titulados', y='Titulacion', labels={'Titulacion': 'Titulación', 'Num. Titulados': 'Número de Titulados'})
-  fig.update_layout(title_text="Número de alumnos titulados por titulación", title_x=0.5, height= 80 + 920 * (num_tit / 50) ,margin=dict(l=20, r=20, t=40, b=30))
-  st.plotly_chart(fig, use_container_width=True)
+    df2 = loadDataFrame(year)[['Anyo', 'MPrMat']].fillna(0)
+    df2 = df2.rename(columns={'MPrMat': 'Matriculados'})
+    df2['Sexo'] = 'Mujer'
+    
+    df = pd.concat([df1, df2])
+    fig = px.violin(df, x="Anyo", y="Matriculados", color="Sexo")
+    st.plotly_chart(fig, use_container_width=True)
 
 main()
